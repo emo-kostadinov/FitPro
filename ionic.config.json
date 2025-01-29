@@ -1,0 +1,7 @@
+{
+  "name": "FitPro",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

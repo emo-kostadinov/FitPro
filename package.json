@@ -1,0 +1,51 @@
+{
+  "name": "fitpro-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ionic serve",
+    "build": "ionic build",
+    "test": "ionic test",
+    "lint": "ionic lint"
+  },
+  "dependencies": {
+    "@capacitor-community/sqlite": "^6.0.2",
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "6.0.2",
+    "@capacitor/core": "6.2.0",
+    "@capacitor/haptics": "6.0.2",
+    "@capacitor/keyboard": "6.0.3",
+    "@capacitor/status-bar": "6.0.2",
+    "@ionic/pwa-elements": "^3.3.0",
+    "@ionic/react": "^8.4.1",
+    "@ionic/react-router": "^6.0.0",
+    "firebase": "^11.2.0",
+    "jeep-sqlite": "^2.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^5.3.4",
+    "react-sqlite-hook": "^3.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "6.2.0",
+    "@ionic/cli": "^7.2.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.4.0"
+  },
+  "cordova": {
+    "plugins": {
+      "@capacitor-community/sqlite": {}
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
