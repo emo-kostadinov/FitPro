@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonInput,
-  IonButton,
-  IonList,
-  IonItem,
-  IonLabel,
-} from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonList, IonItem, IonLabel } from '@ionic/react';
 import { addWorkout, getAllWorkouts, deleteWorkout } from '../database/database';
 
 const Workouts = () => {
