@@ -52,6 +52,7 @@ export const initializeDatabase = async () => {
           reps INTEGER,
           weight REAL,
           notes TEXT,
+          set_type TEXT,  -- e.g., "Warm-up", "Pyramid", "Main Set"
           FOREIGN KEY (workout_id) REFERENCES workouts(id),
           FOREIGN KEY (exercise_id) REFERENCES exercises(id)
         );
