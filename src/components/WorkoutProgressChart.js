@@ -29,7 +29,8 @@ const WorkoutProgressChart = ({ workoutId, workoutExerciseId }) => {
         // Format data for chart
         const formattedData = data.map((log) => ({
           date: new Date(log.date).toLocaleDateString(),
-          weight: parseFloat(log.weight) || 0
+          weight: parseFloat(log.weight) || 0,
+          sets: parseFloat(log.sets) || 0
         }));
 
         console.log("Formatted Data for Chart:", formattedData);  // Debugging output
