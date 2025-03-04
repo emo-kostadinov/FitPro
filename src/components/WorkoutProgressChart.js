@@ -9,19 +9,19 @@ const WorkoutProgressChart = ({ workoutId, workoutExerciseId }) => {
   useEffect(() => {
     const fetchLogs = async () => {
       if (!workoutExerciseId) {
-        console.warn("⚠️ No workoutExerciseId provided, cannot fetch logs.");
+        console.warn("No workoutExerciseId provided, cannot fetch logs.");
         return;
       }
 
       try {
-        console.log("📌 workoutExerciseId:", workoutExerciseId);
-        console.log("📌 workoutId:", workoutId);
+        console.log("workoutExerciseId:", workoutExerciseId);
+        console.log("workoutId:", workoutId);
 
         const data = await getLogsForWorkoutExercise(workoutId, workoutExerciseId);
         console.log("🔍 Raw fetched logs:", data);
 
         if (!data || data.length === 0) {
-          console.warn("⚠️ No logs found for this exercise.");
+          console.warn("No logs found for this exercise.");
           setLogs([]);  // Set an empty state
           return;
         }
@@ -35,7 +35,7 @@ const WorkoutProgressChart = ({ workoutId, workoutExerciseId }) => {
         console.log("Formatted Data for Chart:", formattedData);  // Debugging output
         setLogs(formattedData);
       } catch (error) {
-        console.error("❌ Error fetching logs:", error);
+        console.error("Error fetching logs:", error);
         setLogs([]);  // Set to empty in case of error
       }
     };
