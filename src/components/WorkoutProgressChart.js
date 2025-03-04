@@ -18,7 +18,7 @@ const WorkoutProgressChart = ({ workoutId, workoutExerciseId }) => {
         console.log("workoutId:", workoutId);
 
         const data = await getLogsForWorkoutExercise(workoutId, workoutExerciseId);
-        console.log("🔍 Raw fetched logs:", data);
+        console.log("Raw fetched logs:", data);
 
         if (!data || data.length === 0) {
           console.warn("No logs found for this exercise.");
