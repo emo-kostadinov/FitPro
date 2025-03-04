@@ -9,16 +9,21 @@ const ProfileCompletionForm = ({ onComplete }) => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const profileData = {
       name,
       age: parseInt(age, 10),
       height: parseFloat(height),
       weight: parseFloat(weight),
     };
-    onComplete(profileData);
-    history.push('/dashboard');
-  };
+  
+    try {
+      await onComplete(profileData); 
+      history.push('/dashboard');
+    } catch (error) {
+      console.error('Error completing profile:', error);
+    }
+  };  
 
   return (
     <IonPage>

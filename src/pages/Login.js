@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/react';
 import { signInWithGoogle, onAuthStateChangedListener } from '../firebase';
 import { useHistory } from 'react-router-dom';
@@ -6,12 +6,12 @@ import { getProfile } from '../database/database';
 
 const Login = ({ onLoginSuccess }) => {
   const history = useHistory();
+  const [user, setUser] = useState(null);
 
-  // Check if the user is already logged in
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener(async (user) => {
       if (user) {
-        console.log('User is already logged in:', user);
+        setUser(user);
         const profile = await getProfile(user.uid);
         if (profile) {
           onLoginSuccess(user);
@@ -22,12 +22,13 @@ const Login = ({ onLoginSuccess }) => {
       }
     });
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+    return () => unsubscribe();
   }, [history, onLoginSuccess]);
 
   const handleGoogleLogin = async () => {
     try {
       const user = await signInWithGoogle();
+      setUser(user);
       const profile = await getProfile(user.uid);
       if (profile) {
         onLoginSuccess(user);

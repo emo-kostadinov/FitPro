@@ -1,4 +1,3 @@
-// src/database/database.js
 import { CapacitorSQLite } from '@capacitor-community/sqlite';
 import { Capacitor } from '@capacitor/core';
 
@@ -20,7 +19,6 @@ export const initializeDatabase = async () => {
     const db = await CapacitorSQLite.open({ database: dbName });
     console.log('Database opened successfully.');
 
-    // Create tables if they don't exist
     await db.execute({
       statements: `
         CREATE TABLE IF NOT EXISTS profiles (
@@ -60,16 +58,17 @@ export const initializeDatabase = async () => {
 
         CREATE TABLE IF NOT EXISTS logs (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
+          workout_id INTEGER,
           workout_exercise_id INTEGER,
           date DATETIME DEFAULT CURRENT_TIMESTAMP,
           sets INTEGER,
           reps INTEGER,
           weight REAL,
           notes TEXT,
+          FOREIGN KEY (workout_id) REFERENCES workouts(id),
           FOREIGN KEY (workout_exercise_id) REFERENCES workout_exercises(id)
-        );
-      `,
-    });
+        );`
+    });  
 
     console.log('Tables created or already exist.');
   } catch (error) {
@@ -88,10 +87,7 @@ export const saveProfile = async (userId, profileData) => {
     // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     await db.run({
-      statement: `
-        INSERT INTO profiles (userId, name, age, height, weight)
-        VALUES (?, ?, ?, ?, ?);
-      `,
+      statement: "INSERT INTO profiles (userId, name, age, height, weight) VALUES (?, ?, ?, ?, ?);",
       values: [userId, profileData.name, profileData.age, profileData.height, profileData.weight],
     });
     console.log('Profile saved to SQLite.');
@@ -108,7 +104,7 @@ export const getProfile = async (userId) => {
     // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     const result = await db.query({
-      statement: `SELECT * FROM profiles WHERE userId = ?;`,
+      statement: "SELECT * FROM profiles WHERE userId = ?;",
       values: [userId],
     });
     return result.values?.[0] || null;
@@ -127,7 +123,7 @@ export const addWorkout = async (workout) => {
     // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     await db.run({
-      statement: `INSERT INTO workouts (name, archived) VALUES (?, ?);`,
+      statement: "INSERT INTO workouts (name, archived) VALUES (?, ?);",
       values: [workout.name, workout.archived || 0],
     });
     console.log('Workout added to SQLite:', workout.name);
@@ -145,12 +141,30 @@ export const getAllWorkouts = async () => {
     // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     const result = await db.query({
-      statement: `SELECT * FROM workouts;`,
+      statement: "SELECT * FROM workouts;",
     });
     console.log('Fetched workouts from SQLite:', result.values);
     return result.values || [];
   }
 };
+
+// Function to fetch a workout by ID
+export const getWorkoutById = async (workoutId) => {
+  if (isWebPlatform()) {
+    // Fallback to localStorage for web
+    const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+    return workouts.find((workout) => workout.id === parseInt(workoutId, 10)) || null;
+  } else {
+    // Use SQLite for native platforms
+    const db = await CapacitorSQLite.open({ database: dbName });
+    const result = await db.query({
+      statement: "SELECT * FROM workouts WHERE id = ?;",
+      values: [workoutId],
+    });
+    return result.values?.[0] || null;
+  }
+};
+
 
 // Function to delete a workout
 export const deleteWorkout = async (id) => {
@@ -164,7 +178,7 @@ export const deleteWorkout = async (id) => {
     // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     await db.run({
-      statement: `DELETE FROM workouts WHERE id = ?;`,
+      statement: "DELETE FROM workouts WHERE id = ?;",
       values: [id],
     });
     console.log(`Workout with ID ${id} deleted from SQLite.`);
@@ -183,7 +197,7 @@ export const addExercise = async (exercise) => {
     // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     await db.run({
-      statement: `INSERT INTO exercises (name, primary_muscle_group, secondary_muscle_group, notes) VALUES (?, ?, ?, ?);`,
+      statement: "INSERT INTO exercises (name, primary_muscle_group, secondary_muscle_group, notes) VALUES (?, ?, ?, ?);",
       values: [exercise.name, exercise.primary_muscle_group, exercise.secondary_muscle_group, exercise.notes],
     });
     console.log('Exercise added to SQLite:', exercise.name);
@@ -193,34 +207,60 @@ export const addExercise = async (exercise) => {
 // Function to fetch all exercises
 export const getAllExercises = async () => {
   if (isWebPlatform()) {
-    // Fallback to localStorage for web
     const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
     console.log('Fetched exercises from localStorage:', exercises);
     return exercises;
   } else {
-    // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     const result = await db.query({
-      statement: `SELECT * FROM exercises;`,
+      statement: "SELECT * FROM exercises;",
     });
     console.log('Fetched exercises from SQLite:', result.values);
     return result.values || [];
   }
 };
 
+// Helper function to group exercises by muscle group
+export const groupExercisesByMuscle = (exercises) => {
+  const grouped = exercises.reduce((acc, exercise) => {
+    const group = exercise.primary_muscle_group || 'Other';
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(exercise);
+    return acc;
+  }, {});
+
+  console.log("Grouped exercises:", grouped);
+  return grouped;
+};
+
+// Function to delete an exercise
+export const deleteExercise = async (exerciseId) => {
+  if (isWebPlatform()) {
+    const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+    const updatedExercises = exercises.filter((exercise) => exercise.id !== exerciseId);
+    localStorage.setItem('exercises', JSON.stringify(updatedExercises));
+    console.log(`Exercise with ID ${exerciseId} deleted from localStorage.`);
+  } else {
+    const db = await CapacitorSQLite.open({ database: dbName });
+    await db.run({
+      statement: "DELETE FROM exercises WHERE id = ?;",
+      values: [exerciseId],
+    });
+    console.log(`Exercise with ID ${exerciseId} deleted from SQLite.`);
+  }
+};
+
 // Function to add a workout exercise
 export const addWorkoutExercise = async (workoutExercise) => {
   if (isWebPlatform()) {
-    // Fallback to localStorage for web
     const workoutExercises = JSON.parse(localStorage.getItem('workout_exercises') || '[]');
     workoutExercises.push({ ...workoutExercise, id: Date.now() });
     localStorage.setItem('workout_exercises', JSON.stringify(workoutExercises));
     console.log('Workout exercise added to localStorage.');
   } else {
-    // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
     await db.run({
-      statement: `INSERT INTO workout_exercises (workout_id, exercise_id, sets, reps, weight, notes) VALUES (?, ?, ?, ?, ?, ?);`,
+      statement: "INSERT INTO workout_exercises (workout_id, exercise_id, sets, reps, weight, notes) VALUES (?, ?, ?, ?, ?, ?);",
       values: [
         workoutExercise.workout_id,
         workoutExercise.exercise_id,
@@ -234,22 +274,103 @@ export const addWorkoutExercise = async (workoutExercise) => {
   }
 };
 
-// Function to fetch all logs for a workout exercise
-export const getLogsForWorkoutExercise = async (workoutExerciseId) => {
+export const getLogsForWorkoutExercise = async (workoutId, workoutExerciseId) => {
+  try {
+    if (isWebPlatform()) {
+      const logs = JSON.parse(localStorage.getItem('logs') || '[]');
+      
+      // Filter logs correctly using `workout_exercise_id`
+      const filteredLogs = logs
+        .filter((log) => log.workout_id === workoutId && log.workout_exercise_id === workoutExerciseId)
+        .map((log) => ({
+          ...log,
+          date: new Date(log.date).toISOString(), // Ensure correct date format
+        }))
+        .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort properly
+
+      console.log(`✅ Fetched logs from localStorage for exercise ${workoutExerciseId}:`, filteredLogs);
+      return filteredLogs;
+    } else {
+      const db = await CapacitorSQLite.open({ database: dbName });
+      const result = await db.query({
+        statement: "SELECT * FROM logs WHERE workout_id = ? AND workout_exercise_id = ? ORDER BY date ASC;",
+        values: [workoutId, workoutExerciseId],
+      });
+
+      console.log(`✅ Fetched logs from SQLite for exercise ${workoutExerciseId}:`, result.values);
+      return result.values || [];
+    }
+  } catch (error) {
+    console.error('❌ Error fetching logs:', error);
+    return [];
+  }
+};
+
+
+export const getExercisesForWorkout = async (workoutId) => {
+  if (isWebPlatform()) {
+    console.log("Running on Web: Using localStorage");
+
+    // Load data from localStorage
+    const workoutExercises = JSON.parse(localStorage.getItem('workout_exercises') || '[]');
+    const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+
+    console.log("Workout Exercises from storage:", workoutExercises);
+    console.log("Exercises from storage:", exercises);
+
+    // Convert IDs to numbers before filtering
+    return workoutExercises
+      .filter((we) => parseInt(we.workout_id, 10) === parseInt(workoutId, 10))
+      .map((we) => {
+        const exercise = exercises.find((e) => parseInt(e.id, 10) === parseInt(we.exercise_id, 10));
+        return exercise ? { ...exercise, ...we } : null;
+      })
+      .filter((exercise) => exercise !== null); // Remove any null values
+  } else {
+    console.log("Running on Native: Using SQLite");
+
+    // Use SQLite for native platforms
+    const db = await CapacitorSQLite.open({ database: 'fitpro.db' });
+    const result = await db.query({
+      statement: `
+        SELECT e.*, we.sets, we.reps, we.weight 
+        FROM workout_exercises we
+        JOIN exercises e ON we.exercise_id = e.id
+        WHERE we.workout_id = ?;
+      `,
+      values: [workoutId],
+    });
+
+    console.log("Workout Exercises from DB:", result.values);
+    return result.values || [];
+  }
+};
+
+// Function to log performance for an exercise
+export const logPerformance = async (workoutId, workoutExerciseId, sets, reps, weight) => {
   if (isWebPlatform()) {
     // Fallback to localStorage for web
     const logs = JSON.parse(localStorage.getItem('logs') || '[]');
-    const filteredLogs = logs.filter((log) => log.workout_exercise_id === workoutExerciseId);
-    console.log('Fetched logs from localStorage:', filteredLogs);
-    return filteredLogs;
+    logs.push({
+      workout_id: workoutId,
+      workout_exercise_id: workoutExerciseId,
+      sets: parseInt(sets, 10),
+      reps: parseInt(reps, 10),
+      weight: parseFloat(weight),
+      date: new Date().toISOString(),
+    });
+    localStorage.setItem('logs', JSON.stringify(logs));
+    console.log('Performance logged in localStorage.');
   } else {
     // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
-    const result = await db.query({
-      statement: `SELECT * FROM logs WHERE workout_exercise_id = ?;`,
-      values: [workoutExerciseId],
+    await db.run({
+      statement: `
+        INSERT INTO logs (workout_id, workout_exercise_id, sets, reps, weight, date) 
+        VALUES (?, ?, ?, ?, ?, ?);
+      `,
+      values: [workoutId, workoutExerciseId, sets, reps, weight, new Date().toISOString()],
     });
-    console.log('Fetched logs from SQLite:', result.values);
-    return result.values || [];
+    console.log('Performance logged in SQLite.');
   }
 };

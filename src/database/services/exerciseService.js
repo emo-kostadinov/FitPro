@@ -1,83 +1,74 @@
-import db from '../database';
+import express from 'express';
+import { CapacitorSQLite } from '@capacitor-community/sqlite';
 
-const createTable = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction((tx) => {
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS exercises (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, region TEXT, primary_muscle TEXT, secondary_muscle TEXT, notes TEXT)`,
-          [],
-          (_, result) => resolve(result),
-          (_, error) => reject(error)
-        );
-      });
-    });
+const router = express.Router();
+const dbName = 'fitpro.db';
+
+// Initialize the database
+const initializeDatabase = async () => {
+  const db = await CapacitorSQLite.open({ database: dbName });
+  await db.execute({
+    statements: `
+      CREATE TABLE IF NOT EXISTS exercises (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        region TEXT,
+        primary_muscle TEXT,
+        secondary_muscle TEXT,
+        notes TEXT
+      );
+    `,
+  });
+  console.log('Exercise table initialized.');
 };
 
-// Add exercise to the database
-export const addExercise = (exercise) => {
-    return new Promise((resolve, reject) => {
-      db.transaction((tx) => {
-        tx.executeSql(
-          `INSERT INTO exercises (name, region, primary_muscle, secondary_muscle, notes) VALUES (?, ?, ?, ?, ?)`,
-          [exercise.name, exercise.region, exercise.primary_muscle, exercise.secondary_muscle, exercise.notes],
-          (_, result) => resolve(result.insertId),  // Resolve with the inserted exercise's ID
-          (_, error) => {
-            console.error('Error adding exercise:', error);
-            reject(error);
-          }
-        );
-      });
+// Route to add an exercise
+router.post('/add', async (req, res) => {
+  try {
+    const { name, region, primary_muscle, secondary_muscle, notes } = req.body;
+    const db = await CapacitorSQLite.open({ database: dbName });
+
+    await db.run({
+      statement: `INSERT INTO exercises (name, region, primary_muscle, secondary_muscle, notes) VALUES (?, ?, ?, ?, ?);`,
+      values: [name, region, primary_muscle, secondary_muscle, notes],
     });
-  };
-  
-  // Get all exercises from the database
-  export const getAllExercises = () => {
-    return new Promise((resolve, reject) => {
-      db.transaction((tx) => {
-        tx.executeSql(
-          `SELECT * FROM exercises`,
-          [],
-          (_, { rows }) => resolve(rows._array),  // Resolve with the array of exercises
-          (_, error) => {
-            console.error('Error fetching exercises:', error);
-            reject(error);
-          }
-        );
-      });
+
+    res.status(201).json({ message: 'Exercise added successfully!' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error adding exercise' });
+  }
+});
+
+// Route to get all exercises
+router.get('/all', async (req, res) => {
+  try {
+    const db = await CapacitorSQLite.open({ database: dbName });
+    const result = await db.query({
+      statement: `SELECT * FROM exercises;`,
     });
-  };
-  
-  // Edit an existing exercise
-  export const editExercise = (exercise) => {
-    return new Promise((resolve, reject) => {
-      db.transaction((tx) => {
-        tx.executeSql(
-          `UPDATE exercises SET name = ?, region = ?, primary_muscle = ?, secondary_muscle = ?, notes = ? WHERE id = ?`,
-          [exercise.name, exercise.region, exercise.primary_muscle, exercise.secondary_muscle, exercise.notes, exercise.id],
-          (_, result) => resolve(result.rowsAffected),  // Resolve with the number of affected rows
-          (_, error) => {
-            console.error('Error editing exercise:', error);
-            reject(error);
-          }
-        );
-      });
+
+    res.json(result.values || []);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching exercises' });
+  }
+});
+
+// Route to delete an exercise
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const db = await CapacitorSQLite.open({ database: dbName });
+    await db.run({
+      statement: `DELETE FROM exercises WHERE id = ?;`,
+      values: [req.params.id],
     });
-  };
-  
-  // Delete an exercise by ID
-  export const deleteExercise = (id) => {
-    return new Promise((resolve, reject) => {
-      db.transaction((tx) => {
-        tx.executeSql(
-          `DELETE FROM exercises WHERE id = ?`,
-          [id],
-          (_, result) => resolve(result.rowsAffected),  // Resolve with the number of rows deleted
-          (_, error) => {
-            console.error('Error deleting exercise:', error);
-            reject(error);
-          }
-        );
-      });
-    });
-  };
-  
+
+    res.json({ message: `Exercise with ID ${req.params.id} deleted.` });
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting exercise' });
+  }
+});
+
+// Initialize the database when the module is loaded
+initializeDatabase();
+
+export default router;

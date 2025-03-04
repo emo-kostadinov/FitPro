@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonList, IonItem, IonLabel } from '@ionic/react';
 import { addWorkout, getAllWorkouts, deleteWorkout } from '../database/database';
+import { useHistory } from 'react-router-dom';
 
 const Workouts = () => {
   const [workouts, setWorkouts] = useState([]);
   const [newWorkoutName, setNewWorkoutName] = useState('');
+  const history = useHistory();
 
   const fetchWorkouts = async () => {
     try {
@@ -64,6 +66,12 @@ const Workouts = () => {
             workouts.map((workout) => (
               <IonItem key={workout.id}>
                 <IonLabel>{workout.name}</IonLabel>
+                <IonButton onClick={() => history.push(`/workouts/${workout.id}/exercises`)}>
+                  View Exercises
+                </IonButton>
+                <IonButton onClick={() => history.push(`/edit-workout/${workout.id}`)}>
+                  Edit
+                </IonButton>
                 <IonButton color="danger" onClick={() => handleDeleteWorkout(workout.id)}>
                   Delete
                 </IonButton>

@@ -6,7 +6,10 @@ import { initializeDatabase, isWebPlatform, saveProfile } from './database/datab
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Workouts from './pages/Workouts';
+import EditWorkout from './pages/EditWorkout';
 import ProtectedRoute from './components/ProtectedRoute';
+import Exercises from './pages/Exercises';
+import WorkoutExercises from './pages/WorkoutExercises';
 import ProfileCompletionForm from './components/ProfileCompletionForm';
 import { onAuthStateChangedListener } from './firebase';
 
@@ -39,20 +42,26 @@ const App = () => {
   // Track user authentication state
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener((user) => {
-      setUser(user); 
+      if (user) {
+        setUser(user);
+        console.log("User signed in:", user);
+      } else {
+        setUser(null);
+        console.log("No user signed in.");
+      }
     });
-
-    return () => unsubscribe(); 
+  
+    return () => unsubscribe();
   }, []);
-
+  
   const handleLoginSuccess = (userData) => {
     setUser(userData);
   };
 
-  const handleProfileComplete = async (profileData) => {
+  const handleProfileComplete = async (profileData, history) => { 
     try {
       await saveProfile(user.uid, profileData);
-      history.push('/dashboard');
+      history.push('/dashboard'); 
     } catch (error) {
       console.error('Error saving profile:', error);
     }
@@ -73,6 +82,9 @@ const App = () => {
           {/* Protected routes */}
           <ProtectedRoute path="/dashboard" component={Dashboard} exact user={user} />
           <ProtectedRoute path="/workouts" component={Workouts} exact user={user} />
+          <Route path="/edit-workout/:workoutId" component={EditWorkout} exact />
+          <Route path="/exercises" component={Exercises} exact />
+          <Route path="/workouts/:workoutId/exercises" component={WorkoutExercises} exact /> 
 
           {/* Redirects */}
           <Route exact path="/">

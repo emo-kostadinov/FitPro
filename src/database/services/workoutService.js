@@ -1,44 +1,71 @@
+import express from 'express';
 import { CapacitorSQLite } from '@capacitor-community/sqlite';
 
+const router = express.Router();
 const dbName = 'fitpro.db';
 
-export const addWorkout = async (workout) => {
-  try {
-    const db = await CapacitorSQLite.open({ database: dbName });
-    await db.execute({
-      statements: `INSERT INTO workouts (name, archived) VALUES (?, ?);`,
-      values: [workout.name, workout.archived],
-    });
-    console.log('Workout added successfully:', workout.name);
-  } catch (error) {
-    console.error('Error adding workout:', error);
-    throw error;
-  }
+// Initialize the database
+const initializeDatabase = async () => {
+  const db = await CapacitorSQLite.open({ database: dbName });
+  await db.execute({
+    statements: `
+      CREATE TABLE IF NOT EXISTS workouts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        archived INTEGER DEFAULT 0
+      );
+    `,
+  });
+  console.log('Workout table initialized.');
 };
 
-export const getAllWorkouts = async () => {
+// Route to add a workout
+router.post('/add', async (req, res) => {
+  try {
+    const { name, archived } = req.body;
+    const db = await CapacitorSQLite.open({ database: dbName });
+
+    await db.run({
+      statement: `INSERT INTO workouts (name, archived) VALUES (?, ?);`,
+      values: [name, archived],
+    });
+
+    res.status(201).json({ message: 'Workout added successfully!' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error adding workout' });
+  }
+});
+
+// Route to get all workouts
+router.get('/all', async (req, res) => {
   try {
     const db = await CapacitorSQLite.open({ database: dbName });
     const result = await db.query({
       statement: `SELECT * FROM workouts;`,
     });
-    return result.values || [];
-  } catch (error) {
-    console.error('Error fetching workouts:', error);
-    throw error;
-  }
-};
 
-export const deleteWorkout = async (id) => {
+    res.json(result.values || []);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching workouts' });
+  }
+});
+
+// Route to delete a workout
+router.delete('/delete/:id', async (req, res) => {
   try {
     const db = await CapacitorSQLite.open({ database: dbName });
-    await db.execute({
-      statements: `DELETE FROM workouts WHERE id = ?;`,
-      values: [id],
+    await db.run({
+      statement: `DELETE FROM workouts WHERE id = ?;`,
+      values: [req.params.id],
     });
-    console.log(`Workout with ID ${id} deleted.`);
+
+    res.json({ message: `Workout with ID ${req.params.id} deleted.` });
   } catch (error) {
-    console.error('Error deleting workout:', error);
-    throw error;
+    res.status(500).json({ error: 'Error deleting workout' });
   }
-};
+});
+
+// Initialize the database when the module is loaded
+initializeDatabase();
+
+export default router;
