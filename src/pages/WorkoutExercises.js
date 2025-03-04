@@ -28,9 +28,9 @@ const WorkoutExercises = () => {
         }
         setPreviousLogs(logsData);
 
-        console.log("✅ Previous logs loaded:", logsData); // Debugging output
+        console.log("Previous logs loaded:", logsData); // Debugging output
       } catch (error) {
-        console.error("❌ Error fetching logs:", error);
+        console.error("Error fetching logs:", error);
       }
     };
 
@@ -41,13 +41,13 @@ const WorkoutExercises = () => {
   const handleLogPerformance = async (exerciseId) => {
     const log = logs[exerciseId];
     if (!log || !log.sets || !log.reps || !log.weight) {
-      alert('⚠️ Please fill in all fields.');
+      alert('Please fill in all fields.');
       return;
     }
 
     try {
       await logPerformance(workoutId, exerciseId, log.sets, log.reps, log.weight);
-      alert('✅ Performance logged successfully!');
+      alert('Performance logged successfully!');
 
       // Fetch updated logs
       const updatedLogs = await getLogsForWorkoutExercise(workoutId, exerciseId);
@@ -60,11 +60,11 @@ const WorkoutExercises = () => {
       if (currentExerciseIndex < exercises.length - 1) {
         setCurrentExerciseIndex(currentExerciseIndex + 1);
       } else {
-        alert('🎉 Workout Completed!');
+        alert('Workout Completed!');
         history.push(`/workouts/${workoutId}/summary`);
       }
     } catch (error) {
-      console.error('❌ Error logging performance:', error);
+      console.error('Error logging performance:', error);
     }
   };
 
