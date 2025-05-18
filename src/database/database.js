@@ -275,6 +275,56 @@ export const addWorkoutExercise = async (workoutExercise) => {
   }
 };
 
+// Function to fetch all logs
+export const getAllLogs = async () => {
+  if (isWebPlatform()) {
+    const logs = JSON.parse(localStorage.getItem('logs') || '[]');
+    const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+    const workoutExercises = JSON.parse(localStorage.getItem('workout_exercises') || '[]');
+    const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+
+    return logs.map(log => {
+      const workoutId = parseInt(log.workout_id, 10);
+      const workoutExerciseId = parseInt(log.workout_exercise_id, 10);
+      
+      const workout = workouts.find(w => parseInt(w.id, 10) === workoutId);
+      const workoutExercise = workoutExercises.find(we => parseInt(we.id, 10) === workoutExerciseId);
+      
+      let exercise = null;
+      if (workoutExercise) {
+        const exerciseId = parseInt(workoutExercise.exercise_id, 10);
+        exercise = exercises.find(e => parseInt(e.id, 10) === exerciseId);
+      }      
+
+      return {
+        ...log,
+        workoutName: workout?.name || 'Unknown Workout',
+        exerciseName: exercise?.name || 'Unknown Exercise',
+        primaryMuscleGroup: exercise?.primary_muscle_group || '',
+      };
+    });
+  } else {
+    const db = await CapacitorSQLite.open({ database: 'fitpro.db' });
+
+    const result = await db.query({
+      statement: `
+        SELECT 
+          logs.*, 
+          w.name AS workoutName, 
+          e.name AS exerciseName, 
+          e.primary_muscle_group AS primaryMuscleGroup
+        FROM logs
+        LEFT JOIN workouts w ON logs.workout_id = w.id
+        LEFT JOIN workout_exercises we ON logs.workout_exercise_id = we.id
+        LEFT JOIN exercises e ON we.exercise_id = e.id
+        ORDER BY logs.date DESC;
+      `,
+    });
+
+    return result.values || [];
+  }
+};
+
 export const getLogsForWorkoutExercise = async (workoutId, workoutExerciseId) => {
   try {
     if (isWebPlatform()) {
@@ -304,6 +354,22 @@ export const getLogsForWorkoutExercise = async (workoutId, workoutExerciseId) =>
   } catch (error) {
     console.error('❌ Error fetching logs:', error);
     return [];
+  }
+};
+
+export const deleteLog = async (logId) => {
+  if (isWebPlatform()) {
+    const logs = JSON.parse(localStorage.getItem('logs') || '[]');
+    const updatedLogs = logs.filter((log) => log.id !== logId);
+    localStorage.setItem('logs', JSON.stringify(updatedLogs));
+    console.log(`Log with ID ${logId} deleted from localStorage.`);
+  } else {
+    const db = await CapacitorSQLite.open({ database: 'fitpro.db' });
+    await db.run({
+      statement: "DELETE FROM logs WHERE id = ?;",
+      values: [logId],
+    });
+    console.log(`Log with ID ${logId} deleted from SQLite.`);
   }
 };
 
