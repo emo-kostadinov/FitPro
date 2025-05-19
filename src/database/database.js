@@ -68,6 +68,14 @@ export const initializeDatabase = async () => {
           notes TEXT,
           FOREIGN KEY (workout_id) REFERENCES workouts(id),
           FOREIGN KEY (workout_exercise_id) REFERENCES workout_exercises(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS biometric_logs (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          userId TEXT NOT NULL,
+          date DATETIME DEFAULT CURRENT_TIMESTAMP,
+          height REAL,
+          weight REAL
         );`
     });  
 
@@ -78,20 +86,32 @@ export const initializeDatabase = async () => {
   }
 };
 
-// Save profile data
 export const saveProfile = async (userId, profileData) => {
   if (isWebPlatform()) {
-    // Fallback to localStorage for web
     localStorage.setItem(`profile_${userId}`, JSON.stringify(profileData));
     console.log('Profile saved to localStorage.');
   } else {
-    // Use SQLite for native platforms
     const db = await CapacitorSQLite.open({ database: dbName });
-    await db.run({
-      statement: "INSERT INTO profiles (userId, name, age, height, weight) VALUES (?, ?, ?, ?, ?);",
-      values: [userId, profileData.name, profileData.age, profileData.height, profileData.weight],
+
+    // Check if profile exists
+    const result = await db.query({
+      statement: "SELECT * FROM profiles WHERE userId = ?;",
+      values: [userId],
     });
-    console.log('Profile saved to SQLite.');
+
+    if (result.values?.length > 0) {
+      await db.run({
+        statement: "UPDATE profiles SET name = ?, age = ? WHERE userId = ?;",
+        values: [profileData.name, profileData.age, userId],
+      });
+      console.log('Profile updated in SQLite.');
+    } else {
+      await db.run({
+        statement: "INSERT INTO profiles (userId, name, age) VALUES (?, ?, ?);",
+        values: [userId, profileData.name, profileData.age],
+      });
+      console.log('Profile inserted in SQLite.');
+    }
   }
 };
 
@@ -439,5 +459,33 @@ export const logPerformance = async (workoutId, workoutExerciseId, sets, reps, w
       values: [workoutId, workoutExerciseId, sets, reps, weight, new Date().toISOString()],
     });
     console.log('Performance logged in SQLite.');
+  }
+};
+
+export const addBiometricLog = async (userId, height, weight) => {
+  if (isWebPlatform()) {
+    const logs = JSON.parse(localStorage.getItem('biometric_logs') || '[]');
+    logs.push({ id: Date.now(), userId, date: new Date().toISOString(), height, weight });
+    localStorage.setItem('biometric_logs', JSON.stringify(logs));
+  } else {
+    const db = await CapacitorSQLite.open({ database: dbName });
+    await db.run({
+      statement: 'INSERT INTO biometric_logs (userId, height, weight) VALUES (?, ?, ?);',
+      values: [userId, height, weight],
+    });
+  }
+};
+
+export const getBiometricLogs = async (userId) => {
+  if (isWebPlatform()) {
+    const logs = JSON.parse(localStorage.getItem('biometric_logs') || '[]');
+    return logs.filter(log => log.userId === userId);
+  } else {
+    const db = await CapacitorSQLite.open({ database: dbName });
+    const result = await db.query({
+      statement: 'SELECT * FROM biometric_logs WHERE userId = ? ORDER BY date ASC;',
+      values: [userId],
+    });
+    return result.values || [];
   }
 };

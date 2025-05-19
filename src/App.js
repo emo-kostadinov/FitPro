@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Exercises from './pages/Exercises';
 import WorkoutExercises from './pages/WorkoutExercises';
 import ProfileCompletionForm from './components/ProfileCompletionForm';
+import BiometricData from './pages/BiometricData';
 import { onAuthStateChangedListener } from './firebase';
 
 import '@ionic/react/css/core.css';
@@ -21,7 +22,6 @@ const App = () => {
   const [dbInitialized, setDbInitialized] = useState(false); 
   const history = useHistory();
 
-  // Initialize database
   useEffect(() => {
     const initDB = async () => {
       try {
@@ -36,11 +36,10 @@ const App = () => {
     if (!isWebPlatform()) {
       initDB();
     } else {
-      // Skip SQLite initialization for web
       setDbInitialized(true);
     }
   }, []);
-  // Track user authentication state
+
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener((user) => {
       if (user) {
@@ -51,7 +50,7 @@ const App = () => {
         console.log("No user signed in.");
       }
     });
-  
+
     return () => unsubscribe();
   }, []);
   
@@ -59,10 +58,15 @@ const App = () => {
     setUser(userData);
   };
 
-  const handleProfileComplete = async (profileData, history) => { 
+  const handleProfileComplete = async (profileData) => {
     try {
+      if (!user?.uid) {
+        console.warn("Cannot save profile: user.uid is undefined");
+        return;
+      }
+
+      console.log("Saving profile for UID:", user.uid, profileData);
       await saveProfile(user.uid, profileData);
-      history.push('/dashboard'); 
     } catch (error) {
       console.error('Error saving profile:', error);
     }
@@ -86,7 +90,12 @@ const App = () => {
           <ProtectedRoute path="/logs" component={Logs} exact user={user} />
           <Route path="/edit-workout/:workoutId" component={EditWorkout} exact />
           <Route path="/exercises" component={Exercises} exact />
-          <Route path="/workouts/:workoutId/exercises" component={WorkoutExercises} exact /> 
+          <Route path="/workouts/:workoutId/exercises" component={WorkoutExercises} exact />
+
+          {/* Biometric Data page, passed the userId as a prop */}
+          {user && (
+            <Route path="/biometric" render={() => <BiometricData userId={user.uid} />} exact />
+          )}
 
           {/* Redirects */}
           <Route exact path="/">

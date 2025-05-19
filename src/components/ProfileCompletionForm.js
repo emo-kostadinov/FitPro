@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonLabel } from '@ionic/react';
+import {
+  IonPage, IonHeader, IonToolbar, IonTitle,
+  IonContent, IonInput, IonButton, IonItem, IonLabel
+} from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 
 const ProfileCompletionForm = ({ onComplete }) => {
@@ -10,20 +13,27 @@ const ProfileCompletionForm = ({ onComplete }) => {
   const [weight, setWeight] = useState('');
 
   const handleSubmit = async () => {
+    // Basic validation
+    if (!name || !age || !height || !weight) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
     const profileData = {
       name,
       age: parseInt(age, 10),
       height: parseFloat(height),
       weight: parseFloat(weight),
     };
-  
+
     try {
-      await onComplete(profileData); 
-      history.push('/dashboard');
+      await onComplete(profileData); // Save profile data
+      history.push('/dashboard');   // ✅ Safe navigation here
     } catch (error) {
       console.error('Error completing profile:', error);
+      alert('There was a problem saving your profile.');
     }
-  };  
+  };
 
   return (
     <IonPage>

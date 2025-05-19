@@ -1,12 +1,43 @@
-import React, { useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonPopover } from '@ionic/react';
+import React, { useState, useEffect } from 'react';
+import {
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
+  IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonPopover
+} from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { signOutUser } from '../firebase';
+import { signOutUser, onAuthStateChangedListener } from '../firebase';
+import { getProfile } from '../database/database';
 
-const Dashboard = ({ user }) => {
+const Dashboard = () => {
   const history = useHistory();
   const [showPopover, setShowPopover] = useState(false);
   const [popoverEvent, setPopoverEvent] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [user, setUser] = useState(null); // store Firebase user
+
+  // Listen for authenticated user
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedListener((firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+      } else {
+        setUser(null);
+        history.push('/login');
+      }
+    });
+    return () => unsubscribe();
+  }, [history]);
+
+  // Load profile data from localStorage or DB
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user?.uid) {
+        const profileData = await getProfile(user.uid);
+        console.log("Profile fetched in Dashboard:", profileData);
+        setProfile(profileData);
+      }
+    };
+    fetchProfile();
+  }, [user]);
 
   const handleProfileClick = (event) => {
     setPopoverEvent(event.nativeEvent);
@@ -32,8 +63,14 @@ const Dashboard = ({ user }) => {
             onDidDismiss={() => setShowPopover(false)}
           >
             <IonContent className="ion-padding">
-              <p><strong>Name:</strong> {user?.displayName || 'N/A'}</p>
+              <p><strong>Name:</strong> {profile?.name || user?.displayName || 'N/A'}</p>
               <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
+              <IonButton expand="block" onClick={() => {
+                setShowPopover(false);
+                history.push('/biometric-data');
+              }}>
+                Biometric Data
+              </IonButton>
               <IonButton expand="block" color="danger" onClick={handleLogout}>
                 Logout
               </IonButton>
@@ -45,7 +82,7 @@ const Dashboard = ({ user }) => {
       <IonContent className="ion-padding">
         <h1>Welcome to FitPro!</h1>
         <p>Your fitness journey starts here. Choose an action below:</p>
-        
+
         <IonCard button onClick={() => history.push('/workouts')}>
           <IonCardHeader>
             <IonCardTitle>Workouts</IonCardTitle>
