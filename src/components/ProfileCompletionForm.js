@@ -28,7 +28,7 @@ const ProfileCompletionForm = ({ onComplete }) => {
 
     try {
       await onComplete(profileData); // Save profile data
-      history.push('/dashboard');   // ✅ Safe navigation here
+      history.push('/dashboard');
     } catch (error) {
       console.error('Error completing profile:', error);
       alert('There was a problem saving your profile.');

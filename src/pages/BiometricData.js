@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonLabel } from '@ionic/react';
+import { 
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, 
+  IonInput, IonButton, IonItem, IonLabel 
+} from '@ionic/react';
 import { getProfile, saveProfile, getBiometricLogs, addBiometricLog } from '../database/database';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
@@ -48,19 +51,34 @@ const BiometricData = ({ userId }) => {
           <>
             <IonItem>
               <IonLabel position="stacked">Name</IonLabel>
-              <IonInput value={profile.name} onIonChange={(e) => setProfile({ ...profile, name: e.detail.value })} />
+              <IonInput 
+                value={profile.name} 
+                onIonChange={(e) => setProfile({ ...profile, name: e.detail.value })} 
+              />
             </IonItem>
-            <IonButton expand="block" onClick={handleSaveName}>Save Name</IonButton>
+            <div className="button-container">
+              <IonButton onClick={handleSaveName} expand="block">Save Name</IonButton>
+            </div>
 
             <IonItem>
               <IonLabel position="stacked">New Weight (kg)</IonLabel>
-              <IonInput type="number" value={newWeight} onIonChange={(e) => setNewWeight(e.detail.value)} />
+              <IonInput 
+                type="number" 
+                value={newWeight} 
+                onIonChange={(e) => setNewWeight(e.detail.value)} 
+              />
             </IonItem>
             <IonItem>
               <IonLabel position="stacked">New Height (cm)</IonLabel>
-              <IonInput type="number" value={newHeight} onIonChange={(e) => setNewHeight(e.detail.value)} />
+              <IonInput 
+                type="number" 
+                value={newHeight} 
+                onIonChange={(e) => setNewHeight(e.detail.value)} 
+              />
             </IonItem>
-            <IonButton expand="block" onClick={handleAddLog}>Add Biometric Entry</IonButton>
+            <div className="button-container">
+              <IonButton onClick={handleAddLog} expand="block">Add Biometric Entry</IonButton>
+            </div>
 
             {logs.length > 0 && (
               <>

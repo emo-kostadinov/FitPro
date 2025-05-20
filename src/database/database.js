@@ -359,7 +359,7 @@ export const getLogsForWorkoutExercise = async (workoutId, workoutExerciseId) =>
         }))
         .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort properly
 
-      console.log(`✅ Fetched logs from localStorage for exercise ${workoutExerciseId}:`, filteredLogs);
+      console.log(`Fetched logs from localStorage for exercise ${workoutExerciseId}:`, filteredLogs);
       return filteredLogs;
     } else {
       const db = await CapacitorSQLite.open({ database: dbName });
@@ -368,11 +368,11 @@ export const getLogsForWorkoutExercise = async (workoutId, workoutExerciseId) =>
         values: [workoutId, workoutExerciseId],
       });
 
-      console.log(`✅ Fetched logs from SQLite for exercise ${workoutExerciseId}:`, result.values);
+      console.log(`Fetched logs from SQLite for exercise ${workoutExerciseId}:`, result.values);
       return result.values || [];
     }
   } catch (error) {
-    console.error('❌ Error fetching logs:', error);
+    console.error('Error fetching logs:', error);
     return [];
   }
 };
@@ -462,6 +462,7 @@ export const logPerformance = async (workoutId, workoutExerciseId, sets, reps, w
   }
 };
 
+// Function to add bimetric log
 export const addBiometricLog = async (userId, height, weight) => {
   if (isWebPlatform()) {
     const logs = JSON.parse(localStorage.getItem('biometric_logs') || '[]');
@@ -476,6 +477,7 @@ export const addBiometricLog = async (userId, height, weight) => {
   }
 };
 
+// Function to fetch all biometric logs
 export const getBiometricLogs = async (userId) => {
   if (isWebPlatform()) {
     const logs = JSON.parse(localStorage.getItem('biometric_logs') || '[]');
@@ -485,6 +487,61 @@ export const getBiometricLogs = async (userId) => {
     const result = await db.query({
       statement: 'SELECT * FROM biometric_logs WHERE userId = ? ORDER BY date ASC;',
       values: [userId],
+    });
+    return result.values || [];
+  }
+};
+
+// Function to fetch workout stats
+export const getWorkoutStats = async () => {
+  if (isWebPlatform()) {
+    const logs = JSON.parse(localStorage.getItem('logs') || '[]');
+    const grouped = logs.reduce((acc, log) => {
+      const date = new Date(log.date).toISOString().split('T')[0];
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.entries(grouped).map(([date, count]) => ({ date, count }));
+  } else {
+    const db = await CapacitorSQLite.open({ database: dbName });
+    const result = await db.query({
+      statement: `
+        SELECT date(date) as date, COUNT(*) as count
+        FROM logs
+        GROUP BY date(date)
+        ORDER BY date ASC;
+      `
+    });
+    return result.values || [];
+  }
+};
+
+// Function to fetch exercise stats
+export const getExerciseStats = async () => {
+  if (isWebPlatform()) {
+    const logs = JSON.parse(localStorage.getItem('logs') || '[]');
+    const workoutExercises = JSON.parse(localStorage.getItem('workout_exercises') || '[]');
+    const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+
+    const grouped = logs.reduce((acc, log) => {
+      const workoutExercise = workoutExercises.find(we => parseInt(we.id) === parseInt(log.workout_exercise_id));
+      const exercise = exercises.find(e => workoutExercise && parseInt(e.id) === parseInt(workoutExercise.exercise_id));
+      const name = exercise?.name || 'Unknown';
+      acc[name] = (acc[name] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.entries(grouped).map(([name, count]) => ({ name, count }));
+  } else {
+    const db = await CapacitorSQLite.open({ database: dbName });
+    const result = await db.query({
+      statement: `
+        SELECT e.name as name, COUNT(*) as count
+        FROM logs l
+        LEFT JOIN workout_exercises we ON l.workout_exercise_id = we.id
+        LEFT JOIN exercises e ON we.exercise_id = e.id
+        GROUP BY e.name
+        ORDER BY count DESC;
+      `
     });
     return result.values || [];
   }

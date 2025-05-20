@@ -1,6 +1,33 @@
 :root {
-    --ion-color-primary: #3880ff; /* Main app color */
-    --ion-color-secondary: #3dc2ff; /* Secondary color */
-    --ion-color-danger: #f04141; /* Error color */
-  }
-  
+  /* Base Colors */
+  --ion-background-color: #4a4a4a;         /* Medium gray */
+  --ion-text-color: #ffffff;
+
+  /* Primary - Purple */
+  --ion-color-primary: #9c27b0;
+  --ion-color-primary-rgb: 156, 39, 176;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #7b1fa2;
+  --ion-color-primary-tint: #af52bf;
+
+  /* Danger - Red */
+  --ion-color-danger: #e53935;
+  --ion-color-danger-rgb: 229, 57, 53;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #c62828;
+  --ion-color-danger-tint: #ef5350;
+
+  /* Toolbar */
+  --ion-toolbar-background: #3a3a3a;
+
+  /* Inputs */
+  --ion-item-background: #5a5a5a;
+  --ion-input-background: #5a5a5a;
+  --ion-placeholder-color: #cccccc;
+
+  /* Scrollbar */
+  --ion-scrollbar-track: #3d3d3d;
+  --ion-scrollbar-thumb: #9c27b0;
+}

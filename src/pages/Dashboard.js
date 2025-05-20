@@ -12,7 +12,7 @@ const Dashboard = () => {
   const [showPopover, setShowPopover] = useState(false);
   const [popoverEvent, setPopoverEvent] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [user, setUser] = useState(null); // store Firebase user
+  const [user, setUser] = useState(null);
 
   // Listen for authenticated user
   useEffect(() => {
@@ -27,12 +27,11 @@ const Dashboard = () => {
     return () => unsubscribe();
   }, [history]);
 
-  // Load profile data from localStorage or DB
+  // Load profile data from database when user is available
   useEffect(() => {
     const fetchProfile = async () => {
       if (user?.uid) {
         const profileData = await getProfile(user.uid);
-        console.log("Profile fetched in Dashboard:", profileData);
         setProfile(profileData);
       }
     };
@@ -65,10 +64,13 @@ const Dashboard = () => {
             <IonContent className="ion-padding">
               <p><strong>Name:</strong> {profile?.name || user?.displayName || 'N/A'}</p>
               <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
-              <IonButton expand="block" onClick={() => {
-                setShowPopover(false);
-                history.push('/biometric-data');
-              }}>
+              <IonButton
+                expand="block"
+                onClick={() => {
+                  setShowPopover(false);
+                  history.push('/biometric-data');
+                }}
+              >
                 Biometric Data
               </IonButton>
               <IonButton expand="block" color="danger" onClick={handleLogout}>
@@ -83,32 +85,56 @@ const Dashboard = () => {
         <h1>Welcome to FitPro!</h1>
         <p>Your fitness journey starts here. Choose an action below:</p>
 
-        <IonCard button onClick={() => history.push('/workouts')}>
+        <IonCard>
           <IonCardHeader>
-            <IonCardTitle>Workouts</IonCardTitle>
+            <IonCardTitle>
+              <IonButton expand="block" onClick={() => history.push('/workouts')}>
+                Workouts
+              </IonButton>
+            </IonCardTitle>
           </IonCardHeader>
-          <IonCardContent>Manage your workouts and track your progress.</IonCardContent>
+          <IonCardContent>
+            Manage your workouts and track your progress.
+          </IonCardContent>
         </IonCard>
 
-        <IonCard button onClick={() => history.push('/exercises')}>
+        <IonCard>
           <IonCardHeader>
-            <IonCardTitle>Exercises</IonCardTitle>
+            <IonCardTitle>
+              <IonButton expand="block" onClick={() => history.push('/exercises')}>
+                Exercises
+              </IonButton>
+            </IonCardTitle>
           </IonCardHeader>
-          <IonCardContent>Create and explore exercises.</IonCardContent>
+          <IonCardContent>
+            Create and explore exercises.
+          </IonCardContent>
         </IonCard>
 
-        <IonCard button onClick={() => history.push('/logs')}>
+        <IonCard>
           <IonCardHeader>
-            <IonCardTitle>Logs</IonCardTitle>
+            <IonCardTitle>
+              <IonButton expand="block" onClick={() => history.push('/logs')}>
+                Logs
+              </IonButton>
+            </IonCardTitle>
           </IonCardHeader>
-          <IonCardContent>View your workout history and records.</IonCardContent>
+          <IonCardContent>
+            View your workout history and records.
+          </IonCardContent>
         </IonCard>
 
-        <IonCard button onClick={() => history.push('/analytics')}>
+        <IonCard>
           <IonCardHeader>
-            <IonCardTitle>Analytics</IonCardTitle>
+            <IonCardTitle>
+              <IonButton expand="block" onClick={() => history.push('/analytics')}>
+                Analytics
+              </IonButton>
+            </IonCardTitle>
           </IonCardHeader>
-          <IonCardContent>Visualize your fitness journey.</IonCardContent>
+          <IonCardContent>
+            Visualize your fitness journey.
+          </IonCardContent>
         </IonCard>
       </IonContent>
     </IonPage>

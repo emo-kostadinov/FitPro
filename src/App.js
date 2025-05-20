@@ -13,9 +13,14 @@ import Exercises from './pages/Exercises';
 import WorkoutExercises from './pages/WorkoutExercises';
 import ProfileCompletionForm from './components/ProfileCompletionForm';
 import BiometricData from './pages/BiometricData';
+import Analytics from './pages/Analytics';
+import WorkoutAnalytics from './pages/WorkoutAnalytics';
+import ExerciseAnalytics from './pages/ExerciseAnalytics';
 import { onAuthStateChangedListener } from './firebase';
 
 import '@ionic/react/css/core.css';
+import './index.css';
+import './theme/variables.css'
 
 const App = () => {
   const [user, setUser] = useState(null); 
@@ -88,14 +93,13 @@ const App = () => {
           <ProtectedRoute path="/dashboard" component={Dashboard} exact user={user} />
           <ProtectedRoute path="/workouts" component={Workouts} exact user={user} />
           <ProtectedRoute path="/logs" component={Logs} exact user={user} />
+          <ProtectedRoute path="/biometric-data" component={BiometricData} exact user={user} />
+          <ProtectedRoute path="/analytics" component={Analytics} exact user={user} />
+          <ProtectedRoute path="/analytics/workout" component={WorkoutAnalytics} exact user={user} />
+          <ProtectedRoute path="/analytics/exercise" component={ExerciseAnalytics} exact user={user} />
           <Route path="/edit-workout/:workoutId" component={EditWorkout} exact />
           <Route path="/exercises" component={Exercises} exact />
           <Route path="/workouts/:workoutId/exercises" component={WorkoutExercises} exact />
-
-          {/* Biometric Data page, passed the userId as a prop */}
-          {user && (
-            <Route path="/biometric" render={() => <BiometricData userId={user.uid} />} exact />
-          )}
 
           {/* Redirects */}
           <Route exact path="/">

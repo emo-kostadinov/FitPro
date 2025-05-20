@@ -12,40 +12,47 @@ const Exercises = () => {
   const [exerciseToDelete, setExerciseToDelete] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
+  // Fetch and group exercises by primary muscle group
   useEffect(() => {
     const fetchExercises = async () => {
       const data = await getAllExercises();
-      
-      // Преобразуване от масив в обект, групирано по `primary_muscle_group`
+
+      // Group exercises by primary_muscle_group, default to 'Other'
       const groupedExercises = data.reduce((acc, exercise) => {
         const group = exercise.primary_muscle_group || 'Other';
         if (!acc[group]) acc[group] = [];
         acc[group].push(exercise);
         return acc;
       }, {});
-  
-      console.log('Grouped Exercises:', groupedExercises);
+
       setExercises(groupedExercises);
     };
     fetchExercises();
-  }, []);  
+  }, []);
 
   const handleAddExercise = async () => {
-    if (!newExerciseName || !newPrimaryMuscle) {
+    if (!newExerciseName.trim() || !newPrimaryMuscle.trim()) {
       alert('Please fill in the required fields!');
       return;
     }
 
     const exercise = {
-      name: newExerciseName,
-      primary_muscle_group: newPrimaryMuscle,
-      secondary_muscle_group: newSecondaryMuscle,
-      notes: newNotes,
+      name: newExerciseName.trim(),
+      primary_muscle_group: newPrimaryMuscle.trim(),
+      secondary_muscle_group: newSecondaryMuscle.trim(),
+      notes: newNotes.trim(),
     };
 
     await addExercise(exercise);
-    const updatedExercises = await getAllExercises();
-    setExercises(updatedExercises || {});
+    // Refresh list after adding
+    const data = await getAllExercises();
+    const groupedExercises = data.reduce((acc, exercise) => {
+      const group = exercise.primary_muscle_group || 'Other';
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(exercise);
+      return acc;
+    }, {});
+    setExercises(groupedExercises);
 
     setNewExerciseName('');
     setNewPrimaryMuscle('');
@@ -55,10 +62,17 @@ const Exercises = () => {
   };
 
   const handleDeleteExercise = async () => {
-    if (exerciseToDelete) {
+    if (exerciseToDelete !== null) {
       await deleteExercise(exerciseToDelete);
-      const updatedExercises = await getAllExercises();
-      setExercises(updatedExercises || {});
+      // Refresh list after deletion
+      const data = await getAllExercises();
+      const groupedExercises = data.reduce((acc, exercise) => {
+        const group = exercise.primary_muscle_group || 'Other';
+        if (!acc[group]) acc[group] = [];
+        acc[group].push(exercise);
+        return acc;
+      }, {});
+      setExercises(groupedExercises);
       setExerciseToDelete(null);
     }
     setShowDeleteAlert(false);
@@ -114,14 +128,14 @@ const Exercises = () => {
                     <h2>{muscleGroup}</h2>
                   </IonLabel>
                 </IonList>
-                {Array.isArray(groupExercises) ? (
+                {Array.isArray(groupExercises) && groupExercises.length > 0 ? (
                   groupExercises.map((exercise) => (
                     <IonItem key={exercise.id}>
                       <IonLabel>
                         <h3>{exercise.name}</h3>
-                        <p>Primary: {exercise.primary_muscle_group}</p>
-                        <p>Secondary: {exercise.secondary_muscle_group}</p>
-                        <p>Notes: {exercise.notes}</p>
+                        <p>Primary: {exercise.primary_muscle_group || 'N/A'}</p>
+                        <p>Secondary: {exercise.secondary_muscle_group || 'N/A'}</p>
+                        <p>Notes: {exercise.notes || '-'}</p>
                       </IonLabel>
                       <IonButton
                         color="danger"
@@ -129,6 +143,7 @@ const Exercises = () => {
                           setExerciseToDelete(exercise.id);
                           setShowDeleteAlert(true);
                         }}
+                        shape="round"
                       >
                         Delete
                       </IonButton>
