@@ -11,7 +11,7 @@
 </div>
 
 <div style="text-align: right;">
-  <a href="/EN/README.md">
+  <a href="/README.md">
     <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; cursor: pointer;">
       Английски
     </button>
