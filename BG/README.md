@@ -5,7 +5,7 @@
 <div style="text-align: right;">
   <a href="/BG/README.md">
     <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; cursor: pointer;">
-      Bulgarian
+      Български
     </button>
   </a>
 </div>
@@ -13,18 +13,18 @@
 <div style="text-align: right;">
   <a href="/EN/README.md">
     <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; cursor: pointer;">
-      English
+      Английски
     </button>
   </a>
 </div>
 
-## Project description
-Mobile app for personal fitness progress tracking
+## Описание на проекта
+Мобилно приложение за лично проследяване на фитнес прогрес
 
-## About the project
-This diploma project “FitPro” aims to facilitate and improve fitness progress tracking through its functionalities and easy and accessible interface. It easily and effectively records and saves data on the performance of the workout, which helps to quickly orient ourselves on the weight and repetitions of a given exercise. “FitPro” is capable of increasing the fitness progress of every exerciser without complicating the training process.
+## За проекта
+Този дипломен проект “FitPro” има за цел да улесни и подобри проследяването на фитнес прогреса чрез своите функционалности и лесен и достъпен интерфейс. Чрез него лесно и ефективно се записват и запазват данните по изпълнението на тренировката, което спомага бързо да се ориентираме за тежестта  и повторенията на изпълнение на дадено упражнение. “FitPro” е способен да увеличи фитнес прогреса на всеки трениращ без да усложнява протичането на тренировъчния процес.
 
-## Technologies
+## Технологии
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" width="80" height="80"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/androidstudio/androidstudio-original.svg" width="80" height="80"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original-wordmark.svg" width="80" height="80"/> 
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" width="80" height="80"/> 
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" width="80" height="80"/> 
@@ -33,30 +33,30 @@ This diploma project “FitPro” aims to facilitate and improve fitness progres
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original-wordmark.svg" width="80" height="80"/>
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original-wordmark.svg" width="80" height="80"/>
 
-## Instalation
+## Инсталация
 
-1. Install Node.js [https://nodejs.org/en/download]
-2. Install Git [https://git-scm.com/downloads]
-3. Install Ionic [npm install -g @ionic/cli]
-4. Install Firebase [npm install firebase]
-5. Install Express [npm install express]
-6. Install SQLite [npm install sqlite3]
-7. Firebase configuration [https://firebase.google.com/]
-8. Clone Github repository [git clone https://github.com/emo-kostadinov/FitPro]
-9. Start the project [npm run build]
-10. Start GUI [ionic serve]
-11. Make the code platform-dependent [npx build]
-12. Open the project in Android Studio [npx cap open android]
+1. Инсталиране на Node.js [https://nodejs.org/en/download]
+2. Инсталиране на Git [https://git-scm.com/downloads]
+3. Инсталиране на Ionic [npm install -g @ionic/cli]
+4. Инсталиране на Firebase [npm install firebase]
+5. Инсталиране на Express [npm install express]
+6. Инсталиране на SQLite [npm install sqlite3]
+7. Конфигуриране на Firebase [https://firebase.google.com/]
+8. Клониране на Github хранилище [git clone https://github.com/emo-kostadinov/FitPro]
+9. Стартиране на проекта [npm run build]
+10. Стартиране на ГПИ [ionic serve]
+11. Превръщане на кода в платформено-зависим [npx build]
+12. Отваряне на проекта в Android Studio [npx cap open android]
 
-## Conclusion 
+## Заключение
 
-Despite the full implementation of the project requirements, it can be significantly improved with new functionalities or a better user interface. The following improvements are planned for future development of the platform:
+Въпреки пълното изпълнение на изискванията на проекта, той може да бъде значително подобрен с нови функционалности или по-добър потребителски интерфейс. За бъдещо развитие на платформата са предвидени следните подобрения:
 
- - Upgrading the user interface for easier and more favorable use of the application.
- - Adding various themes as styling of the platform.
- - Integration of application usage options via Smart watches and bracelets.
- - Adding notifications from the application.
- - Possibly adding a paid service to the application and corresponding integration of a payment method.
- - Possibly providing access from any operating systems such as iOS.
+ - Надграждане на потребителския интерфейс за по-лесна и благоприятна употреба на приложението.
+ - Добавяне на различни теми като стайлинг на платформата.
+ - Интегриране на възможности за употреба на приложението чрез Смарт часовници и гривни.
+ - Добавяне на известия от приложението.
+ - Евентуално добавяне на платена услуга в приложението и съответна интеграция на начин за плащане.
+ - Евентуално осигуряване на достъп от всякакви операционни системи като iOS.
     
 <img src="https://capsule-render.vercel.app/api?type=waving&height=140&color=gradient&section=footer" />
