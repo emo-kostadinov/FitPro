@@ -1,5 +1,23 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&height=260&color=gradient&text=FitPro&fontSize=80&animation=fadeIn" />
 
+### Languages
+
+<div style="text-align: right;">
+  <a href="/BG/README.md">
+    <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; cursor: pointer;">
+      Bulgarian
+    </button>
+  </a>
+</div>
+
+<div style="text-align: right;">
+  <a href="/EN/README.md">
+    <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; cursor: pointer;">
+      English
+    </button>
+  </a>
+</div>
+
 ## Project description
 Mobile app for personal fitness progress tracking
 
@@ -29,5 +47,16 @@ This diploma project “FitPro” aims to facilitate and improve fitness progres
 10. Start GUI [ionic serve]
 11. Make the code platform-dependent [npx build]
 12. Open the project in Android Studio [npx cap open android]
+
+## Conclusion 
+
+Despite the full implementation of the project requirements, it can be significantly improved with new functionalities or a better user interface. The following improvements are planned for future development of the platform:
+
+ - Upgrading the user interface for easier and more favorable use of the application.
+ - Adding various themes as styling of the platform.
+ - Integration of application usage options via Smart watches and bracelets.
+ - Adding notifications from the application.
+ - Possibly adding a paid service to the application and corresponding integration of a payment method.
+ - Possibly providing access from any operating systems such as iOS.
     
 <img src="https://capsule-render.vercel.app/api?type=waving&height=140&color=gradient&section=footer" />
