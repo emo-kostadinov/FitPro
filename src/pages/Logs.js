@@ -260,6 +260,16 @@ const Logs = () => {
                           </div>
                         </div>
 
+                        {log.exerciseNotes && (
+                          <div className="log-detail" style={{
+                            marginTop: '8px',
+                            fontStyle: 'italic',
+                            color: 'var(--ion-color-medium)'
+                          }}>
+                            <strong>Exercise Notes:</strong> {log.exerciseNotes}
+                          </div>
+                        )}
+
                         {log.notes && (
                           <div className="log-notes">
                             {log.notes}

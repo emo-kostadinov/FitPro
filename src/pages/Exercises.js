@@ -369,6 +369,16 @@ const Exercises = () => {
                             </IonChip>
                           )}
                         </div>
+                        {exercise.notes && (
+                          <p style={{ 
+                            margin: '8px 0 0', 
+                            fontSize: '14px',
+                            color: 'var(--ion-color-medium)',
+                            fontStyle: 'italic'
+                          }}>
+                            {exercise.notes}
+                          </p>
+                        )}
                       </IonLabel>
                       <IonButton
                         fill="clear"
