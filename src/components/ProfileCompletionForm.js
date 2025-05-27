@@ -1,5 +1,25 @@
 import React, { useState } from 'react';
-import {  IonPage,  IonHeader,  IonToolbar,  IonTitle,  IonContent,  IonInput,  IonButton,  IonItem,  IonLabel, IonText } from '@ionic/react';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonInput,
+  IonButton,
+  IonItem,
+  IonLabel,
+  IonText,
+  IonCard,
+  IonCardHeader,
+  IonCardContent,
+  IonCardTitle,
+  IonList,
+  IonIcon,
+  IonButtons,
+  IonBackButton
+} from '@ionic/react';
+import { personOutline, saveOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { profileSchema } from '../validations/validationSchemas';
 
@@ -52,57 +72,109 @@ const ProfileCompletionForm = ({ onComplete }) => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/login" />
+          </IonButtons>
           <IonTitle>Complete Your Profile</IonTitle>
         </IonToolbar>
       </IonHeader>
+      
       <IonContent className="ion-padding">
-        <IonItem>
-          <IonLabel position="floating">Full Name</IonLabel>
-          <IonInput
-            type="text"
-            value={name}
-            onIonChange={(e) => setName(e.detail.value)}
-            className={errors.name ? 'ion-invalid' : ''}
-          />
-        </IonItem>
-        {errors.name && <IonText color="danger" className="ion-padding-start">{errors.name}</IonText>}
+        <div style={{ 
+          textAlign: 'center',
+          paddingTop: '32px',
+          marginBottom: '48px'
+        }}>
+          <h1 style={{ 
+            margin: '0', 
+            fontSize: '32px',
+            fontWeight: '600',
+            color: 'var(--ion-color-primary)'
+          }}>
+            Welcome to FitPro!
+          </h1>
+          <p style={{ 
+            margin: '16px 0 0', 
+            fontSize: '20px',
+            opacity: 0.8 
+          }}>
+            Let's set up your profile to get started
+          </p>
+        </div>
 
-        <IonItem>
-          <IonLabel position="floating">Age</IonLabel>
-          <IonInput
-            type="number"
-            value={age}
-            onIonChange={(e) => setAge(e.detail.value)}
-            className={errors.age ? 'ion-invalid' : ''}
-          />
-        </IonItem>
-        {errors.age && <IonText color="danger" className="ion-padding-start">{errors.age}</IonText>}
+        <IonCard>
+          <IonCardHeader>
+            <IonCardTitle className="ion-text-center">
+              <IonIcon
+                icon={personOutline}
+                style={{
+                  fontSize: '24px',
+                  marginRight: '8px',
+                  verticalAlign: 'middle'
+                }}
+              />
+              Profile Information
+            </IonCardTitle>
+          </IonCardHeader>
+          
+          <IonCardContent>
+            <IonList>
+              <IonItem>
+                <IonLabel position="floating">Full Name</IonLabel>
+                <IonInput
+                  type="text"
+                  value={name}
+                  onIonChange={(e) => setName(e.detail.value)}
+                  className={errors.name ? 'ion-invalid' : ''}
+                />
+              </IonItem>
+              {errors.name && <IonText color="danger" className="ion-padding-start"><small>{errors.name}</small></IonText>}
 
-        <IonItem>
-          <IonLabel position="floating">Height (cm)</IonLabel>
-          <IonInput
-            type="number"
-            value={height}
-            onIonChange={(e) => setHeight(e.detail.value)}
-            className={errors.height ? 'ion-invalid' : ''}
-          />
-        </IonItem>
-        {errors.height && <IonText color="danger" className="ion-padding-start">{errors.height}</IonText>}
+              <IonItem>
+                <IonLabel position="floating">Age</IonLabel>
+                <IonInput
+                  type="number"
+                  value={age}
+                  onIonChange={(e) => setAge(e.detail.value)}
+                  className={errors.age ? 'ion-invalid' : ''}
+                />
+              </IonItem>
+              {errors.age && <IonText color="danger" className="ion-padding-start"><small>{errors.age}</small></IonText>}
 
-        <IonItem>
-          <IonLabel position="floating">Weight (kg)</IonLabel>
-          <IonInput
-            type="number"
-            value={weight}
-            onIonChange={(e) => setWeight(e.detail.value)}
-            className={errors.weight ? 'ion-invalid' : ''}
-          />
-        </IonItem>
-        {errors.weight && <IonText color="danger" className="ion-padding-start">{errors.weight}</IonText>}
+              <IonItem>
+                <IonLabel position="floating">Height (cm)</IonLabel>
+                <IonInput
+                  type="number"
+                  value={height}
+                  onIonChange={(e) => setHeight(e.detail.value)}
+                  className={errors.height ? 'ion-invalid' : ''}
+                />
+              </IonItem>
+              {errors.height && <IonText color="danger" className="ion-padding-start"><small>{errors.height}</small></IonText>}
 
-        <IonButton expand="block" onClick={handleSubmit} className="ion-margin-top">
-          Save Profile
-        </IonButton>
+              <IonItem>
+                <IonLabel position="floating">Weight (kg)</IonLabel>
+                <IonInput
+                  type="number"
+                  value={weight}
+                  onIonChange={(e) => setWeight(e.detail.value)}
+                  className={errors.weight ? 'ion-invalid' : ''}
+                />
+              </IonItem>
+              {errors.weight && <IonText color="danger" className="ion-padding-start"><small>{errors.weight}</small></IonText>}
+            </IonList>
+
+            <IonButton 
+              expand="block" 
+              onClick={handleSubmit} 
+              className="ion-margin-top"
+              style={{ marginTop: '32px' }}
+            >
+              <IonIcon slot="start" icon={saveOutline} />
+              Save Profile
+            </IonButton>
+          </IonCardContent>
+        </IonCard>
       </IonContent>
     </IonPage>
   );
