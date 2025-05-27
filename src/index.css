@@ -25,10 +25,13 @@ ion-button {
   font-weight: bold;
   text-transform: none;
   font-size: 16px;
+  transition: all 0.2s ease;
 }
 
 ion-button:hover {
   --background: var(--ion-color-primary-shade);
+  --box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  transform: translateY(-1px);
 }
 
 /* Danger Button Variant */
@@ -36,6 +39,7 @@ ion-button.danger {
   --background: var(--ion-color-danger);
   --color: var(--ion-color-danger-contrast);
 }
+
 ion-button.danger:hover {
   --background: var(--ion-color-danger-shade);
 }
@@ -47,6 +51,7 @@ ion-button.outline {
   --border-color: var(--ion-color-primary);
   border: 2px solid var(--border-color);
 }
+
 ion-button.outline:hover {
   --background: rgba(156, 39, 176, 0.1);
 }
@@ -60,22 +65,176 @@ ion-select {
   --placeholder-color: var(--ion-placeholder-color);
   border-radius: 8px;
   padding: 12px;
+  margin: 4px 0;
 }
 
 /* ========== IonCard Styling ========== */
 ion-card {
-  --background: #3f3f3f;
+  --background: var(--ion-card-background);
   color: white;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+ion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+}
+
+ion-card ion-card-header {
+  background: var(--ion-card-header-background);
+  padding: 16px;
+}
+
+/* ========== Exercise Cards ========== */
+ion-card.muscle-group-card {
+  margin: 16px 0;
+}
+
+ion-card.muscle-group-card ion-item[color="light"] {
+  --background: var(--exercise-header-background);
+  --color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+ion-card.muscle-group-card ion-item[color="light"] ion-label h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+ion-card.muscle-group-card ion-item[color="light"] ion-label p {
+  color: var(--ion-color-primary);
+  font-weight: 500;
+  margin: 0;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: var(--muscle-group-counter-background);
+}
+
+ion-card.muscle-group-card ion-list {
+  padding: 8px;
+}
+
+.exercise-item-container {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.exercise-item-container:last-child {
+  margin-bottom: 0;
+}
+
+.exercise-item-container ion-item {
+  --background: transparent;
+  --border-color: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+.exercise-item-container ion-label h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.muscle-groups-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.muscle-groups-container ion-chip {
+  margin: 0;
+  --background: rgba(0, 0, 0, 0.15);
+}
+
+.exercise-item-container .delete-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
 }
 
 /* ========== Header / Toolbar ========== */
-ion-header,
-ion-toolbar {
+.main-header {
+  position: relative;
+  z-index: 100;
+}
+
+.main-header ion-toolbar {
   --background: var(--ion-toolbar-background);
   --color: white;
-  border-bottom: 1px solid #666;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+.main-header ion-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+}
+
+.main-header ion-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.main-header ion-button {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --background: transparent;
+  --color: var(--ion-color-medium);
+  height: 42px;
+  position: relative;
+}
+
+.main-header ion-button.active {
+  --color: var(--ion-color-primary);
+  --background: rgba(var(--ion-color-primary-rgb), 0.1);
+}
+
+.main-header ion-button:hover {
+  --background: rgba(255, 255, 255, 0.1);
+  --color: white;
+}
+
+.main-header ion-button ion-icon {
+  font-size: 24px;
+}
+
+.main-header .notification-button {
+  position: relative;
+}
+
+.main-header .notification-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  border-radius: 50%;
+  padding: 4px;
+  min-width: 18px;
+  min-height: 18px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-header ion-back-button {
+  --color: var(--ion-color-primary);
+  --icon-font-size: 24px;
+  --padding-start: 0;
+}
+
+.main-header ion-menu-button {
+  --color: var(--ion-color-primary);
+  --padding-start: 0;
 }
 
 /* ========== Titles / Headings ========== */
@@ -95,13 +254,581 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--ion-scrollbar-track);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--ion-scrollbar-thumb);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #bb86fc; /* lighter purple for hover */
+  background: var(--ion-color-primary-tint);
+}
+
+/* ========== Logs Page ========== */
+.filter-buttons-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 16px;
+}
+
+.filter-buttons-container ion-button {
+  margin: 0;
+  --background: var(--ion-card-background);
+  height: 80px;
+}
+
+.filter-buttons-container ion-button:hover {
+  --background: var(--ion-card-hover-background);
+}
+
+.group-header {
+  padding: 16px;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-card {
+  margin: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.log-card ion-item {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+.log-card .log-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  margin-bottom: 12px;
+}
+
+.log-card .log-detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.log-card .log-detail strong {
+  color: var(--ion-color-primary);
+  font-weight: 500;
+}
+
+.log-card .log-stats {
+  display: flex;
+  gap: 16px;
+  margin: 12px 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.log-card .log-stats .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.log-card .log-stats .stat-label {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 4px;
+}
+
+.log-card .log-stats .stat-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.log-card .log-notes {
+  margin-top: 12px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-style: italic;
+  color: var(--ion-color-medium);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--ion-color-medium);
+}
+
+.empty-state ion-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* ========== Workout Exercises Page ========== */
+.workout-exercise-card {
+  margin: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.workout-exercise-header {
+  background: var(--ion-card-header-background);
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.workout-exercise-header h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--ion-color-primary);
+}
+
+.workout-set-counter {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--muscle-group-counter-background);
+  border-radius: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.workout-exercise-form {
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  margin: 16px;
+}
+
+.workout-exercise-form ion-item {
+  --background: rgba(0, 0, 0, 0.2);
+  --border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.workout-exercise-form ion-item:last-child {
+  margin-bottom: 0;
+}
+
+.workout-exercise-actions {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.workout-summary-card {
+  margin: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.workout-summary-header {
+  background: var(--ion-card-header-background);
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.workout-summary-header h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ion-color-success);
+}
+
+.workout-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+.workout-stat-item {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.workout-stat-label {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 8px;
+}
+
+.workout-stat-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+
+.workout-muscles-targeted {
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  margin: 16px;
+}
+
+.workout-muscles-targeted h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: var(--ion-color-medium);
+}
+
+.workout-muscles-targeted p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--ion-color-primary);
+  line-height: 1.4;
+}
+
+.empty-workout-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-workout-state ion-icon {
+  font-size: 48px;
+  color: var(--ion-color-medium);
+  margin-bottom: 16px;
+}
+
+.empty-workout-state h2 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  color: var(--ion-color-medium);
+}
+
+.empty-workout-state p {
+  margin: 0;
+  color: var(--ion-color-medium);
+  opacity: 0.8;
+}
+
+/* ========== Workouts Page ========== */
+.workouts-container {
+  padding: 16px;
+}
+
+.workout-card {
+  margin-bottom: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--ion-card-background);
+}
+
+.workout-card ion-card-header {
+  background: var(--ion-card-header-background);
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.workout-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.workout-icon-container {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+
+.workout-icon {
+  font-size: 24px;
+  color: var(--ion-color-primary);
+}
+
+.workout-name {
+  flex: 1;
+  font-size: 1.2rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ion-text-color);
+}
+
+.workout-card ion-card-content {
+  padding: 16px;
+}
+
+.workout-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.workout-actions ion-button[fill="solid"] {
+  flex: 1;
+  margin: 0;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  height: 44px;
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.secondary-actions ion-button {
+  margin: 0;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  height: 44px;
+}
+
+/* Search Container */
+.search-container {
+  margin-bottom: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background: var(--ion-background-color);
+}
+
+.search-container ion-searchbar {
+  --box-shadow: none;
+  --border-radius: 12px;
+  --background: rgba(0, 0, 0, 0.2);
+  --color: white;
+  --placeholder-color: var(--ion-color-medium);
+  padding: 0;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state ion-icon {
+  font-size: 48px;
+  color: var(--ion-color-medium);
+  margin-bottom: 16px;
+}
+
+.empty-state h2 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  color: var(--ion-color-medium);
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--ion-color-medium);
+  opacity: 0.8;
+}
+
+/* FAB Button */
+ion-fab-button {
+  --background: var(--ion-color-primary);
+  --background-activated: var(--ion-color-primary-shade);
+  --background-hover: var(--ion-color-primary-tint);
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Alert Customization */
+.alert-wrapper {
+  --background: var(--ion-card-background);
+  --max-width: 400px;
+}
+
+.alert-head {
+  padding: 20px 20px 0;
+}
+
+.alert-head h2 {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.alert-input-group {
+  padding: 20px;
+}
+
+.alert-input {
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 12px;
+  margin: 0;
+}
+
+.alert-button-group {
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.alert-button {
+  border-radius: 8px;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.alert-button.danger {
+  --background: var(--ion-color-danger);
+  --color: white;
+}
+
+/* ========== Analytics Page ========== */
+.analytics-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 16px;
+}
+
+.summary-card {
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.summary-card ion-card-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.summary-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.summary-icon ion-icon {
+  font-size: 24px;
+  color: var(--ion-color-primary);
+}
+
+.summary-info {
+  flex: 1;
+}
+
+.summary-info h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--ion-color-primary);
+}
+
+.summary-info p {
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--ion-color-medium);
+}
+
+.chart-container {
+  padding: 16px;
+  background: var(--ion-card-background);
+  margin: 16px;
+  border-radius: 16px;
+}
+
+.chart-header {
+  margin-bottom: 24px;
+}
+
+.chart-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  font-size: 1.2rem;
+  color: var(--ion-text-color);
+}
+
+.chart-header h2 ion-icon {
+  color: var(--ion-color-primary);
+}
+
+.chart-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chart-controls ion-segment {
+  --background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.metric-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.metric-selector ion-chip {
+  margin: 0;
+  --background: rgba(0, 0, 0, 0.2);
+}
+
+.empty-analytics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-analytics ion-icon {
+  font-size: 48px;
+  color: var(--ion-color-medium);
+  margin-bottom: 16px;
+}
+
+.empty-analytics h2 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  color: var(--ion-color-medium);
+}
+
+.empty-analytics p {
+  margin: 0;
+  color: var(--ion-color-medium);
+  opacity: 0.8;
+}
+
+.analytics-loading .summary-card ion-skeleton-text {
+  border-radius: 8px;
 }

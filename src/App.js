@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Route, Redirect, useHistory } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { initializeDatabase, isWebPlatform, saveProfile } from './database/database';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -25,7 +25,6 @@ import './theme/variables.css'
 const App = () => {
   const [user, setUser] = useState(null); 
   const [dbInitialized, setDbInitialized] = useState(false); 
-  const history = useHistory();
 
   useEffect(() => {
     const initDB = async () => {
@@ -97,9 +96,9 @@ const App = () => {
           <ProtectedRoute path="/analytics" component={Analytics} exact user={user} />
           <ProtectedRoute path="/analytics/workout" component={WorkoutAnalytics} exact user={user} />
           <ProtectedRoute path="/analytics/exercise" component={ExerciseAnalytics} exact user={user} />
-          <Route path="/edit-workout/:workoutId" component={EditWorkout} exact />
-          <Route path="/exercises" component={Exercises} exact />
-          <Route path="/workouts/:workoutId/exercises" component={WorkoutExercises} exact />
+          <ProtectedRoute path="/edit-workout/:workoutId" component={EditWorkout} exact user={user} />
+          <ProtectedRoute path="/exercises" component={Exercises} exact user={user} />
+          <ProtectedRoute path="/workouts/:workoutId/exercises" component={WorkoutExercises} exact user={user} />
 
           {/* Redirects */}
           <Route exact path="/">

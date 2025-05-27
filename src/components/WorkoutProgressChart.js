@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { getLogsForWorkoutExercise } from '../database/database';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/react';
 
-const WorkoutProgressChart = ({ workoutId, workoutExerciseId }) => {
+const WorkoutProgressChart = ({ workoutId, workoutExerciseId, sessionId }) => {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
@@ -14,35 +14,32 @@ const WorkoutProgressChart = ({ workoutId, workoutExerciseId }) => {
       }
 
       try {
-        console.log("workoutExerciseId:", workoutExerciseId);
-        console.log("workoutId:", workoutId);
-
-        const data = await getLogsForWorkoutExercise(workoutId, workoutExerciseId);
-        console.log("Raw fetched logs:", data);
+        const data = await getLogsForWorkoutExercise(workoutId, workoutExerciseId, sessionId);
 
         if (!data || data.length === 0) {
-          console.warn("No logs found for this exercise.");
-          setLogs([]);  // Set an empty state
+          setLogs([]);
           return;
         }
 
-        // Format data for chart
+        // Format data for chart - track both weight and reps
         const formattedData = data.map((log) => ({
           date: new Date(log.date).toLocaleDateString(),
           weight: parseFloat(log.weight) || 0,
+          reps: parseFloat(log.reps) || 0,
           sets: parseFloat(log.sets) || 0
         }));
 
-        console.log("Formatted Data for Chart:", formattedData);  // Debugging output
+        // Sort by date ascending
+        formattedData.sort((a, b) => new Date(a.date) - new Date(b.date));
         setLogs(formattedData);
       } catch (error) {
         console.error("Error fetching logs:", error);
-        setLogs([]);  // Set to empty in case of error
+        setLogs([]);
       }
     };
 
     fetchLogs();
-  }, [workoutId, workoutExerciseId]);
+  }, [workoutId, workoutExerciseId, sessionId]);
 
   return (
     <IonCard>
@@ -55,13 +52,37 @@ const WorkoutProgressChart = ({ workoutId, workoutExerciseId }) => {
             <LineChart data={logs}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
-              <YAxis label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft' }} />
-              <Tooltip />
-              <Line type="monotone" dataKey="weight" stroke="#8884d8" strokeWidth={2} />
+              <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+              <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+              <Tooltip 
+                formatter={(value, name) => {
+                  if (name === 'Weight') return [`${value} kg`, name];
+                  if (name === 'Reps') return [value, name];
+                  return [value, name];
+                }}
+              />
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="weight"
+                name="Weight"
+                stroke="#8884d8"
+                strokeWidth={2}
+                activeDot={{ r: 6 }}
+              />
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="reps"
+                name="Reps"
+                stroke="#82ca9d"
+                strokeWidth={2}
+                activeDot={{ r: 6 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <p>No progress data available.</p>
+          <p>No progress data available yet.</p>
         )}
       </IonCardContent>
     </IonCard>

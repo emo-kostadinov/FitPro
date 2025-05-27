@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { IonCard, IonList, IonItem, IonLabel, IonInput, IonButton, IonDatetime } from '@ionic/react';
 import { addWorkoutLog } from '../database/database';
+import { getAuth } from 'firebase/auth';
+import { useHistory } from 'react-router-dom';
 
 const WorkoutLogger = ({ onLogAdded, onCancel }) => {
   const [workoutName, setWorkoutName] = useState('');
   const [date, setDate] = useState(new Date().toISOString());
   const [exercises, setExercises] = useState('');
   const [notes, setNotes] = useState('');
+  const auth = getAuth();
+  const history = useHistory();
 
   const handleSaveLog = async () => {
     if (!workoutName || !exercises) {
@@ -14,7 +18,15 @@ const WorkoutLogger = ({ onLogAdded, onCancel }) => {
       return;
     }
 
+    const userId = auth.currentUser?.uid;
+    if (!userId) {
+      console.error('No user logged in');
+      history.push('/login');
+      return;
+    }
+
     const log = {
+      userId,
       workoutName,
       date,
       exercises,

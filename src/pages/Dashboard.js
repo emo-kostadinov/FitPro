@@ -1,8 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import {
-  IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonPopover
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonCard,
+  IonCardHeader,
+  IonCardContent,
+  IonPopover,
+  IonIcon,
+  IonAvatar,
+  IonItem,
+  IonLabel,
+  IonChip,
+  IonBadge,
+  IonText,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonButtons
 } from '@ionic/react';
+import {
+  barbell,
+  clipboard,
+  analytics,
+  fitness,
+  person,
+  trendingUp,
+  time,
+  calendar,
+  barbellOutline,
+  fitnessOutline,
+  statsChartOutline,
+  documentTextOutline,
+  logOutOutline
+} from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { signOutUser, onAuthStateChangedListener } from '../firebase';
 import { getProfile } from '../database/database';
@@ -48,94 +82,93 @@ const Dashboard = () => {
     history.push('/login');
   };
 
+  const quickActions = [
+    { title: 'Start Workout', icon: barbell, path: '/workouts', color: 'primary' },
+    { title: 'View Exercises', icon: fitness, path: '/exercises', color: 'primary' },
+    { title: 'Check Progress', icon: analytics, path: '/analytics', color: 'primary' },
+    { title: 'View Logs', icon: clipboard, path: '/logs', color: 'primary' }
+  ];
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>FitPro Dashboard</IonTitle>
-          <IonButton slot="end" onClick={handleProfileClick}>
-            Profile
-          </IonButton>
-          <IonPopover
-            isOpen={showPopover}
-            event={popoverEvent}
-            onDidDismiss={() => setShowPopover(false)}
-          >
-            <IonContent className="ion-padding">
-              <p><strong>Name:</strong> {profile?.name || user?.displayName || 'N/A'}</p>
-              <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
-              <IonButton
-                expand="block"
-                onClick={() => {
-                  setShowPopover(false);
-                  history.push('/biometric-data');
-                }}
-              >
-                Biometric Data
-              </IonButton>
-              <IonButton expand="block" color="danger" onClick={handleLogout}>
-                Logout
-              </IonButton>
-            </IonContent>
-          </IonPopover>
+          <IonTitle>Dashboard</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={handleLogout}>
+              <IonIcon slot="icon-only" icon={logOutOutline} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
       <IonContent className="ion-padding">
-        <h1>Welcome to FitPro!</h1>
-        <p>Your fitness journey starts here. Choose an action below:</p>
+        {/* Welcome Section */}
+        <div style={{ 
+          textAlign: 'center',
+          paddingTop: '32px',
+          marginBottom: '48px'
+        }}>
+          <h1 style={{ 
+            margin: '0', 
+            fontSize: '32px',
+            fontWeight: '600',
+            color: 'var(--ion-color-primary)'
+          }}>
+            Welcome back, {profile?.name || user?.displayName || 'User'}!
+          </h1>
+          <p style={{ 
+            margin: '16px 0 0', 
+            fontSize: '20px',
+            opacity: 0.8 
+          }}>
+            Ready for today's workout?
+          </p>
+        </div>
 
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>
-              <IonButton expand="block" onClick={() => history.push('/workouts')}>
-                Workouts
-              </IonButton>
-            </IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            Manage your workouts and track your progress.
-          </IonCardContent>
-        </IonCard>
-
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>
-              <IonButton expand="block" onClick={() => history.push('/exercises')}>
-                Exercises
-              </IonButton>
-            </IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            Create and explore exercises.
-          </IonCardContent>
-        </IonCard>
-
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>
-              <IonButton expand="block" onClick={() => history.push('/logs')}>
-                Logs
-              </IonButton>
-            </IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            View your workout history and records.
-          </IonCardContent>
-        </IonCard>
-
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>
-              <IonButton expand="block" onClick={() => history.push('/analytics')}>
-                Analytics
-              </IonButton>
-            </IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            Visualize your fitness journey.
-          </IonCardContent>
-        </IonCard>
+        {/* Quick Actions Stack */}
+        <div style={{ 
+          width: '100%',
+          maxWidth: '400px',
+          margin: '0 auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          {quickActions.map((action, index) => (
+            <IonCard 
+              key={index}
+              onClick={() => history.push(action.path)}
+              style={{ 
+                margin: 0,
+                cursor: 'pointer',
+                transition: 'transform 0.2s'
+              }}
+              className="ion-activatable"
+            >
+              <IonCardContent style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                padding: '16px'
+              }}>
+                <IonIcon
+                  icon={action.icon}
+                  style={{
+                    fontSize: '24px',
+                    color: 'var(--ion-color-primary)',
+                    marginRight: '16px'
+                  }}
+                />
+                <span style={{ 
+                  fontSize: '16px',
+                  fontWeight: '500'
+                }}>
+                  {action.title}
+                </span>
+              </IonCardContent>
+            </IonCard>
+          ))}
+        </div>
       </IonContent>
     </IonPage>
   );

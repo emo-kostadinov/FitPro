@@ -1,6 +1,6 @@
 :root {
   /* Base Colors */
-  --ion-background-color: #4a4a4a;         /* Medium gray */
+  --ion-background-color: #2d2d2d;         /* Darker gray for better contrast */
   --ion-text-color: #ffffff;
 
   /* Primary - Purple */
@@ -11,6 +11,14 @@
   --ion-color-primary-shade: #7b1fa2;
   --ion-color-primary-tint: #af52bf;
 
+  /* Secondary - Blue */
+  --ion-color-secondary: #3d5afe;
+  --ion-color-secondary-rgb: 61, 90, 254;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #3249e0;
+  --ion-color-secondary-tint: #5b73fe;
+
   /* Danger - Red */
   --ion-color-danger: #e53935;
   --ion-color-danger-rgb: 229, 57, 53;
@@ -19,15 +27,33 @@
   --ion-color-danger-shade: #c62828;
   --ion-color-danger-tint: #ef5350;
 
+  /* Success - Green */
+  --ion-color-success: #43a047;
+  --ion-color-success-rgb: 67, 160, 71;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #2e7d32;
+  --ion-color-success-tint: #66bb6a;
+
   /* Toolbar */
-  --ion-toolbar-background: #3a3a3a;
+  --ion-toolbar-background: #1f1f1f;
+
+  /* Cards */
+  --ion-card-background: #3a3a3a;
+  --ion-card-header-background: #333333;
+  --ion-card-hover-background: #404040;
 
   /* Inputs */
-  --ion-item-background: #5a5a5a;
-  --ion-input-background: #5a5a5a;
+  --ion-item-background: #404040;
+  --ion-input-background: #404040;
   --ion-placeholder-color: #cccccc;
 
   /* Scrollbar */
   --ion-scrollbar-track: #3d3d3d;
   --ion-scrollbar-thumb: #9c27b0;
+
+  /* Exercise Cards */
+  --exercise-card-background: #3a3a3a;
+  --exercise-header-background: #333333;
+  --muscle-group-counter-background: rgba(156, 39, 176, 0.15);
 }

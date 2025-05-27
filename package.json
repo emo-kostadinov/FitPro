@@ -21,6 +21,7 @@
     "@ionic/react-router": "^6.0.0",
     "browserify-zlib": "^0.2.0",
     "crypto-browserify": "^3.12.1",
+    "date-fns": "^2.30.0",
     "firebase": "^11.2.0",
     "https-browserify": "^1.0.0",
     "jeep-sqlite": "^2.8.0",
@@ -33,7 +34,8 @@
     "recharts": "^2.15.1",
     "sqlite3": "^5.1.7",
     "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0"
+    "stream-http": "^3.2.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@capacitor/cli": "6.2.0",
